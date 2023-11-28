@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        
+        <user-dashboard></user-dashboard>
+    </div>
+
+
+    <script>
+  
+        Vue.component('user-dashboard', {
+            template: `
+                <div>
+                    <div>
+                        <h2>User Profile</h2>
+                        <img :src="user.profilePicture" alt="Profile Picture" />
+                        <p><strong>Name:</strong> {{ user.name }}</p>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                    </div>
+
+                    <div>
+                        <h3>Greeting Message</h3>
+                        <p>{{ greetingMessage }}</p>
+                    </div>
+
+                    <div>
+                        <h3>Edit Profile</h3>
+                        <form @submit.prevent="saveChanges">
+                            <label>Name:</label>
+                            <input v-model="user.name" />
+
+                            <label>Email:</label>
+                            <input v-model="user.email" />
+
+                            <label>Profile Picture URL:</label>
+                            <input v-model="user.profilePicture" />
+
+                            <button type="submit">Save Changes</button>
+                        </form>
+                    </div>
+
+                    <div>
+                        <h3>User Age</h3>
+                        <p>{{ userAge }} years old</p>
+                    </div>
+                </div>
+            `,
+            data() {
+                return {
+                    user: {
+                        name: 'John Doe',
+                        email: 'john@example.com',
+                        profilePicture: 'https://example.com/profile.jpg',
+                        isAdmin: false,
+                        birthdate: '1990-01-01',
+                    },
+                };
+            },
+            computed: {
+                greetingMessage() {
+                    return this.user.isAdmin ? 'Hello Admin!' : 'Hello User!';
+                },
+                userAge() {
+                    const birthdate = new Date(this.user.birthdate);
+                    const today = new Date();
+                    const age = today.getFullYear() - birthdate.getFullYear();
+                    return age;
+                },
+            },
+            methods: {
+                saveChanges() {
+                    
+                    console.log('Changes saved!');
+                },
+            },
+            watch: {
+                'user.*': {
+                    handler(newVal, oldVal) {
+                        console.log('User details modified:', newVal);
+                    },
+                    deep: true,
+                },
+            },
+            created() {
+                console.log('Component created. Fetching user data...');
+                
+                setTimeout(() => {
+            
+                    this.user = { ...this.user, name: 'Updated Name', email: 'updated@example.com' };
+                    console.log('User data loaded:', this.user);
+                }, 1000);
+            },
+        });
+
+        
+        new Vue({
+            el: '#app',
+        });
+    </script>
+</body>
+</html>
